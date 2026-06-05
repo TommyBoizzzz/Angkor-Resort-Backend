@@ -10,24 +10,30 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    @Column(nullable = false, unique = true)
+    private String email;
 
+    @Column(nullable = false)
     private String password;
 
-    // Constructor must match class name
     public Users() {
+    }
+
+    public Users(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

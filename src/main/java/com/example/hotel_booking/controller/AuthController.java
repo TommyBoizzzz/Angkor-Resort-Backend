@@ -13,31 +13,35 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/login")
-    public String login(@RequestBody Users user) {
-
-        Users dbUser = userRepository.findByUsername(user.getUsername());
-
-        if (dbUser != null &&
-                dbUser.getPassword().equals(user.getPassword())) {
-            return "Login success";
-        }
-
-        return "Login failed";
-    }
-
     @PostMapping("/register")
     public String register(@RequestBody Users user) {
 
         Users existingUser =
-                userRepository.findByUsername(user.getUsername());
+                userRepository.findByEmail(user.getEmail());
 
         if (existingUser != null) {
-            return "Username already exists";
+            return "Email already exists";
         }
 
         userRepository.save(user);
 
         return "User registered successfully";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody Users user) {
+
+        Users dbUser =
+                userRepository.findByEmail(user.getEmail());
+
+        if (dbUser == null) {
+            return "Email not found";
+        }
+
+        if (!dbUser.getPassword().equals(user.getPassword())) {
+            return "Incorrect password";
+        }
+
+        return "Login success";
     }
 }
