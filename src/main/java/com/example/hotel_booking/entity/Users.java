@@ -16,13 +16,7 @@ public class Users {
     @Column(nullable = false)
     private String password;
 
-    public Users() {
-    }
-
-    public Users(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
+    public Users() {}
 
     public Long getId() {
         return id;
