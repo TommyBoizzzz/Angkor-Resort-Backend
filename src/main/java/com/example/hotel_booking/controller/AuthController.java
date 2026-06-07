@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDate; // ✅ FIXED IMPORT
 
 @RestController
 @RequestMapping("/api/auth")
@@ -28,18 +29,33 @@ public class AuthController {
             return res;
         }
 
-        Users existingUser = userRepository.findByEmail(user.getEmail());
-
-        if (existingUser != null) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             res.put("success", false);
             res.put("message", "Email already exists");
             return res;
+        }
+
+        // ✅ DEFAULT VALUES
+        user.setRole("guest");
+
+        if (user.getUsername() == null) {
+            user.setUsername(user.getEmail().split("@")[0]);
+        }
+
+        if (user.getPhoneNumber() == null) {
+            user.setPhoneNumber("N/A");
+        }
+
+        // ✅ DOB IS OPTIONAL (NO ERROR)
+        if (user.getDateOfBirth() == null) {
+            user.setDateOfBirth(null);
         }
 
         userRepository.save(user);
 
         res.put("success", true);
         res.put("message", "User registered successfully");
+
         return res;
     }
 
@@ -71,6 +87,8 @@ public class AuthController {
 
         res.put("success", true);
         res.put("message", "Login success");
+        res.put("user", dbUser);
+
         return res;
     }
 }
