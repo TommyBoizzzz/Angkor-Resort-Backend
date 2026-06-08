@@ -1,10 +1,6 @@
 package com.example.hotel_booking.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "rooms")
@@ -14,15 +10,20 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String roomNumber;
 
+    @Column(nullable = false)
     private String roomType;
 
+    @Column(nullable = false)
     private Double price;
 
-    private String status;
+    @Column(nullable = false)
+    private String status; // AVAILABLE, BOOKED, MAINTENANCE
 
-    public Room() {}
+    public Room() {
+    }
 
     public Long getId() {
         return id;

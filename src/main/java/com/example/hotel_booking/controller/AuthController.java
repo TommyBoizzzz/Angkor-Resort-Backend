@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.time.LocalDate; // ✅ FIXED IMPORT
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,7 +17,9 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
+    // =========================
     // REGISTER
+    // =========================
     @PostMapping("/register")
     public Map<String, Object> register(@RequestBody Users user) {
 
@@ -29,14 +31,16 @@ public class AuthController {
             return res;
         }
 
-        if (userRepository.findByEmail(user.getEmail()) != null) {
+        Optional<Users> existingUser = userRepository.findByEmail(user.getEmail());
+
+        if (existingUser.isPresent()) {
             res.put("success", false);
             res.put("message", "Email already exists");
             return res;
         }
 
-        // ✅ DEFAULT VALUES
-        user.setRole("guest");
+        // DEFAULT VALUES
+        user.setRole("GUEST");
 
         if (user.getUsername() == null) {
             user.setUsername(user.getEmail().split("@")[0]);
@@ -44,11 +48,6 @@ public class AuthController {
 
         if (user.getPhoneNumber() == null) {
             user.setPhoneNumber("N/A");
-        }
-
-        // ✅ DOB IS OPTIONAL (NO ERROR)
-        if (user.getDateOfBirth() == null) {
-            user.setDateOfBirth(null);
         }
 
         userRepository.save(user);
@@ -59,7 +58,9 @@ public class AuthController {
         return res;
     }
 
+    // =========================
     // LOGIN
+    // =========================
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody Users user) {
 
@@ -71,13 +72,15 @@ public class AuthController {
             return res;
         }
 
-        Users dbUser = userRepository.findByEmail(user.getEmail());
+        Optional<Users> dbUserOpt = userRepository.findByEmail(user.getEmail());
 
-        if (dbUser == null) {
+        if (dbUserOpt.isEmpty()) {
             res.put("success", false);
             res.put("message", "Email not found");
             return res;
         }
+
+        Users dbUser = dbUserOpt.get();
 
         if (!dbUser.getPassword().equals(user.getPassword())) {
             res.put("success", false);

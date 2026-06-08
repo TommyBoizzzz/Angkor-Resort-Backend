@@ -17,20 +17,17 @@ public class Users {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    // OPTIONAL FIELDS (can be null)
     private String username;
 
-    @Column(nullable = false)
     private String role;
 
-    @Column(nullable = false)
     private String phoneNumber;
 
-    // ✅ NOW OPTIONAL (NO ERROR)
-    @Column(nullable = true)
     private LocalDate dateOfBirth;
 
-    public Users() {}
+    public Users() {
+    }
 
     public Long getId() {
         return id;
