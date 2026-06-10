@@ -3,14 +3,11 @@ spring:
     name: hotel_booking
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/hotel_booking
+    username: postgres
+    password: admin123
 
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-
-server:
-  port: ${PORT:8080}
