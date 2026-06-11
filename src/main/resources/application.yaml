@@ -3,9 +3,9 @@ spring:
     name: hotel_booking
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/hotel_booking
+    url: postgresql://postgres:ktVCMUIoTvtOrwqdKtZKnFFXupglQrEI@acela.proxy.rlwy.net:24427/railway
     username: postgres
-    password: admin123
+    password: ktVCMUIoTvtOrwqdKtZKnFFXupglQrEI
 
   jpa:
     hibernate:
