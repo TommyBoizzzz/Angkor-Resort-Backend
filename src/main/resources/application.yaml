@@ -3,7 +3,7 @@ spring:
     name: hotel_booking
 
   datasource:
-    url: jdbc:postgresql://acela.proxy.rlwy.net:24427/railway
+    url: jdbc:postgresql://acela.proxy.rlwy.net:24427/railway?sslmode=require
     username: postgres
     password: ktVCMUIoTvtOrwqdKtZKnFFXupglQrEI
 
@@ -11,3 +11,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+server:
+  port: ${PORT:8080}
