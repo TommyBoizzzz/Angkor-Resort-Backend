@@ -4,4 +4,8 @@ import com.example.hotel_booking.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
+
+    long countByRoomType(String roomType);
+
+    long countByRoomTypeAndStatus(String roomType, String status);
 }

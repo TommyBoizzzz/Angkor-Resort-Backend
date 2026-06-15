@@ -14,7 +14,7 @@ public class Room {
     private String roomNumber;
 
     @Column(nullable = false)
-    private String roomType;
+    private String roomType; // STANDARD, DELUXE, SUITE, FAMILY_SUITE
 
     @Column(nullable = false)
     private Double price;
@@ -22,42 +22,19 @@ public class Room {
     @Column(nullable = false)
     private String status; // AVAILABLE, BOOKED, MAINTENANCE
 
-    public Room() {
-    }
+    public Room() {}
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public String getRoomNumber() {
-        return roomNumber;
-    }
+    public String getRoomNumber() { return roomNumber; }
+    public void setRoomNumber(String roomNumber) { this.roomNumber = roomNumber; }
 
-    public void setRoomNumber(String roomNumber) {
-        this.roomNumber = roomNumber;
-    }
+    public String getRoomType() { return roomType; }
+    public void setRoomType(String roomType) { this.roomType = roomType; }
 
-    public String getRoomType() {
-        return roomType;
-    }
+    public Double getPrice() { return price; }
+    public void setPrice(Double price) { this.price = price; }
 
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
