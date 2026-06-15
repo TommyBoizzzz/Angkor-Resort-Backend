@@ -135,4 +135,49 @@ public class BookingController {
 
         return res;
     }
+
+
+    @PostMapping("/reserve")
+    public Map<String, Object> reserveRoom(@RequestBody Map<String, Object> req) {
+
+        Map<String, Object> res = new HashMap<>();
+
+        String roomType = (String) req.get("roomType");
+        Long userId = Long.valueOf(req.get("userId").toString());
+        int roomCount = (int) req.get("roomCount");
+
+        List<Room> availableRooms =
+                roomRepository.findByRoomTypeAndStatus(roomType, "AVAILABLE");
+
+        if (availableRooms.size() < roomCount) {
+            res.put("success", false);
+            res.put("message", "Not enough rooms");
+            return res;
+        }
+
+        // 🔥 RANDOM ROOM SELECTION
+        Collections.shuffle(availableRooms);
+
+        List<Room> selected = availableRooms.stream()
+                .limit(roomCount)
+                .toList();
+
+        for (Room room : selected) {
+            room.setStatus("PENDING"); // 🔒 lock temporarily
+            roomRepository.save(room);
+        }
+
+        Booking booking = new Booking();
+        booking.setUser(userRepository.findById(userId).get());
+        booking.setRoom(selected.get(0)); // (or redesign for multiple rooms)
+        booking.setBookingStatus("PENDING");
+
+        bookingRepository.save(booking);
+
+        res.put("success", true);
+        res.put("bookingId", booking.getId());
+        res.put("rooms", selected);
+
+        return res;
+    }
 }

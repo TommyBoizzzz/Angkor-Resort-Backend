@@ -5,10 +5,7 @@ import com.example.hotel_booking.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -18,64 +15,49 @@ public class RoomController {
     @Autowired
     private RoomRepository roomRepository;
 
-    // =========================
     // GET ALL ROOMS
-    // =========================
     @GetMapping
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
     }
 
-    // =========================
-    // GET ROOM BY ID
-    // =========================
+    // GET BY ID
     @GetMapping("/{id}")
     public Room getRoomById(@PathVariable Long id) {
         return roomRepository.findById(id).orElse(null);
     }
 
-    // =========================
     // CREATE ROOM
-    // =========================
     @PostMapping
     public Map<String, Object> createRoom(@RequestBody Room room) {
 
         Map<String, Object> res = new HashMap<>();
 
-        if (room.getRoomNumber() == null || room.getPrice() == null) {
-            res.put("success", false);
-            res.put("message", "Room number and price are required");
-            return res;
-        }
-
         room.setStatus("AVAILABLE");
-
         roomRepository.save(room);
 
         res.put("success", true);
-        res.put("message", "Room created successfully");
+        res.put("message", "Room created");
 
         return res;
     }
 
-    // =========================
     // UPDATE ROOM
-    // =========================
     @PutMapping("/{id}")
-    public Map<String, Object> updateRoom(@PathVariable Long id, @RequestBody Room newRoom) {
+    public Map<String, Object> updateRoom(@PathVariable Long id,
+                                          @RequestBody Room newRoom) {
 
         Map<String, Object> res = new HashMap<>();
 
-        Optional<Room> roomOpt = roomRepository.findById(id);
+        Optional<Room> opt = roomRepository.findById(id);
 
-        if (roomOpt.isEmpty()) {
+        if (opt.isEmpty()) {
             res.put("success", false);
-            res.put("message", "Room not found");
+            res.put("message", "Not found");
             return res;
         }
 
-        Room room = roomOpt.get();
-
+        Room room = opt.get();
         room.setRoomNumber(newRoom.getRoomNumber());
         room.setRoomType(newRoom.getRoomType());
         room.setPrice(newRoom.getPrice());
@@ -84,29 +66,38 @@ public class RoomController {
         roomRepository.save(room);
 
         res.put("success", true);
-        res.put("message", "Room updated successfully");
+        res.put("message", "Updated");
 
         return res;
     }
 
-    // =========================
     // DELETE ROOM
-    // =========================
     @DeleteMapping("/{id}")
     public Map<String, Object> deleteRoom(@PathVariable Long id) {
 
         Map<String, Object> res = new HashMap<>();
 
-        if (!roomRepository.existsById(id)) {
-            res.put("success", false);
-            res.put("message", "Room not found");
-            return res;
-        }
-
         roomRepository.deleteById(id);
 
         res.put("success", true);
-        res.put("message", "Room deleted successfully");
+        return res;
+    }
+
+    // AVAILABLE COUNT (IMPORTANT FOR YOUR UI)
+    @GetMapping("/available/{roomType}")
+    public long getAvailable(@PathVariable String roomType) {
+        return roomRepository.countByRoomTypeAndStatus(roomType, "AVAILABLE");
+    }
+
+    // STATS
+    @GetMapping("/stats/{roomType}")
+    public Map<String, Object> stats(@PathVariable String roomType) {
+
+        Map<String, Object> res = new HashMap<>();
+
+        res.put("total", roomRepository.countByRoomType(roomType));
+        res.put("available", roomRepository.countByRoomTypeAndStatus(roomType, "AVAILABLE"));
+        res.put("booked", roomRepository.countByRoomTypeAndStatus(roomType, "BOOKED"));
 
         return res;
     }
