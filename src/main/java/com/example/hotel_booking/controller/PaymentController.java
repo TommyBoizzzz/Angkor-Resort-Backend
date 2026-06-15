@@ -2,8 +2,10 @@ package com.example.hotel_booking.controller;
 
 import com.example.hotel_booking.entity.Booking;
 import com.example.hotel_booking.entity.Payment;
+import com.example.hotel_booking.entity.Room;
 import com.example.hotel_booking.repository.BookingRepository;
 import com.example.hotel_booking.repository.PaymentRepository;
+import com.example.hotel_booking.repository.RoomRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,9 @@ public class PaymentController {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
 
     // =========================
     // MAKE PAYMENT
@@ -49,6 +54,9 @@ public class PaymentController {
             return res;
         }
 
+        // =========================
+        // CREATE PAYMENT
+        // =========================
         Payment payment = new Payment();
         payment.setBooking(booking);
         payment.setAmount(booking.getTotalPrice());
@@ -58,9 +66,20 @@ public class PaymentController {
 
         paymentRepository.save(payment);
 
-        // ✅ update booking status
+        // =========================
+        // UPDATE BOOKING STATUS
+        // =========================
         booking.setBookingStatus("CONFIRMED");
         bookingRepository.save(booking);
+
+        // =========================
+        // 🔥 UPDATE ROOM STATUS (IMPORTANT FIX)
+        // =========================
+        Room room = booking.getRoom();
+        if (room != null) {
+            room.setStatus("BOOKED");
+            roomRepository.save(room);
+        }
 
         res.put("success", true);
         res.put("message", "Payment successful");
