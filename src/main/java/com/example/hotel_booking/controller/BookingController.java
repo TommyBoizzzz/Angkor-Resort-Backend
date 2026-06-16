@@ -180,4 +180,32 @@ public class BookingController {
 
         return res;
     }
+
+    @PutMapping("/update/{id}")
+    public Map<String, Object> updateBooking(
+            @PathVariable Long id,
+            @RequestBody Booking req) {
+
+        Map<String, Object> res = new HashMap<>();
+
+        Optional<Booking> opt = bookingRepository.findById(id);
+
+        if (opt.isEmpty()) {
+            res.put("success", false);
+            res.put("message", "Booking not found");
+            return res;
+        }
+
+        Booking b = opt.get();
+
+        b.setCheckInDate(req.getCheckInDate());
+        b.setCheckOutDate(req.getCheckOutDate());
+        b.setBookingStatus(req.getBookingStatus());
+
+        bookingRepository.save(b);
+
+        res.put("success", true);
+        res.put("message", "Booking updated");
+        return res;
+    }
 }
